@@ -33,10 +33,16 @@ async function startMagic() {
 
             try {
                 const response = await fetch("https://api-inference.huggingface.co/models/Mistralai/Mistral-7B-Instruct-v0.2", {
-                    headers: { "Authorization": "Bearer " + hfToken, "Content-Type": "application/json" },
-                    method: "POST",
-                    body: JSON.stringify({ inputs: "[INST] Сгенерируй 1 вопрос про " + topic + " на русском. Формат: Вопрос | Ответ1 | Ответ2 | Ответ3 | 1 [/INST]" })
-                });
+    headers: { 
+        "Authorization": "Bearer " + hfToken,
+        "Content-Type": "application/json"
+    },
+    method: "POST",
+    body: JSON.stringify({ 
+        inputs: "[INST] Сгенерируй 1 вопрос про " + topic + " на русском. Формат: Вопрос | Ответ1 | Ответ2 | Ответ3 | 1 [/INST]",
+        options: { wait_for_model: true } // Эта строчка просит сервер подождать, если он занят
+    })
+});
 
                 const result = await response.json();
 
