@@ -25,7 +25,7 @@
         const endPart = "lSnaYMMuuIXimrooLQjUvmBPgLJmMmwHGE"; // Сюда только хвост токена!
         const hfToken = startPart + endPart;
 
-        async function startMagic() {
+async function startMagic() {
             const topic = document.getElementById('topic').value;
             const status = document.getElementById('status');
             if(!topic) return alert("Введи тему!");
@@ -39,8 +39,14 @@
                 });
 
                 const result = await response.json();
+
+                // ЭТОТ БЛОК ПОКАЖЕТ РЕАЛЬНУЮ ОШИБКУ
                 if (result.error) {
-                    status.innerHTML = "⏳ Прогреваем ИИ... Нажми еще раз через 20 сек.";
+                    if (JSON.stringify(result.error).includes("loading")) {
+                        status.innerHTML = "⏳ Модель прогревается. Нажми еще раз через 15 сек.";
+                    } else {
+                        status.innerHTML = "❌ Ошибка от ИИ: " + JSON.stringify(result.error);
+                    }
                     return;
                 }
 
@@ -53,7 +59,9 @@
                     "<button class='ans-btn' onclick='check(2," + p[4] + ")'>" + p[2] + "</button>" +
                     "<button class='ans-btn' onclick='check(3," + p[4] + ")'>" + p[3] + "</button>";
                 }
-            } catch (e) { status.innerHTML = "❌ Ошибка! Проверь токен."; }
+            } catch (e) { 
+                status.innerHTML = "❌ Техническая ошибка: " + e.message; 
+            }
         }
 
         function check(chosen, correct) {
